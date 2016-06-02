@@ -9,11 +9,15 @@ using static YMLDownloader.YmlStreamProcessor;
 
 namespace YMLDownloader
 {
+    // Дубликаты
+    // Тесты
+    // Экспшен хендлинг
     class Program
     {
         static void Main(string[] args)
         {
-            var connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=test;Integrated Security=True";
+            var db = "test";
+            var connectionString = $@"Data Source=.\SQLEXPRESS;Initial Catalog={db};Integrated Security=True";
             var connectionFactory = new ConnectionFactory(connectionString);
             var logger = new Logger(connectionFactory);
 
