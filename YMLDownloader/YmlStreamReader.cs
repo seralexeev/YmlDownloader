@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,7 +15,20 @@ namespace YMLDownloader
         // В спецификации не нашел может ли категории быть после продуктов
         // т.к смысл в потоковой обработке, поэтому будут экшены для каждого
         // ... класс потому что так лучше отражает семантику и писать короче
-        public class HandlersCollection : Dictionary<string, Action<XElement>> { }
+        public class HandlersCollection
+        {
+            private Dictionary<string, Action<XElement>> _handlers =
+                new Dictionary<string, Action<XElement>>();
+
+            public Action<XElement> this[string key]
+            {
+                set { _handlers[key] = value; }
+            }
+
+            public bool CanBeHandled(string key) => _handlers.ContainsKey(key);
+
+            public void Handle(string node, XElement elem) => _handlers[node](elem);
+        }
 
         public IEnumerable<XElement> FindElements(Stream stream, string elementName)
         {
@@ -70,15 +84,12 @@ namespace YMLDownloader
             {
                 var nodeName = reader.Name;
                 if (reader.NodeType == XmlNodeType.Element
-                    && handlers.ContainsKey(nodeName))
+                    && handlers.CanBeHandled(nodeName))
                 {
                     var matchedElement = XNode.ReadFrom(reader) as XElement;
                     if (matchedElement != null)
                     {
-                        // Вызов делегата медленнее
-                        // может ли это быть боттлнеком
-                        // ... побенчмаркать бы
-                        handlers[nodeName](matchedElement);
+                        handlers.Handle(nodeName, matchedElement);
                     }
                 }
                 else

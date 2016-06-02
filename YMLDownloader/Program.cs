@@ -17,7 +17,7 @@ namespace YMLDownloader
 
             var c = new Config
             {
-                ConcurrencyDegree = 1,
+                ConcurrencyDegree = 10,
                 FlushBufferSize = 2,
                 RetryPolicy = 0,
 
