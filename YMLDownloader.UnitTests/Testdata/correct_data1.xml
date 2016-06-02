@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<!DOCTYPE yml_catalog SYSTEM "shops.dtd">
+<yml_catalog date="2016-05-31 05:31">
+  <shop>
+    <name>OZON.ru</name>
+    <company>ООО "Интернет Решения"</company>
+    <url>http://www.ozon.ru/</url>
+    <currencies>
+      <currency id="RUR" rate="1" />
+    </currencies>
+    <categories>
+      <category id="1133677">Мобильные телефоны</category>
+    </categories>
+    <offers>
+      <offer id="136151096" available="true" group_id="136151185">
+        <url>http://www.ozon.ru/context/detail/id/136151096/?from=prt_xml_facet</url>
+        <price>1690</price>
+        <baseprice>1690</baseprice>
+        <currencyId>RUR</currencyId>
+        <categoryId>1133677</categoryId>
+        <picture>http://static.ozone.ru/multimedia/spare_covers/1014763855.jpg</picture>
+        <delivery>true</delivery>
+        <orderingTime>
+          <ordering>На складе</ordering>
+        </orderingTime>
+        <name>Philips Xenium E103, Red</name>
+        <vendor>Philips</vendor>
+        <vendorCode>8712581738563</vendorCode>
+        <age>18+</age>
+        <barcode>8712581738563</barcode>
+        <param name="Цвет">красный</param>
+        <param name="Размер упаковки (ДхШхВ), см">13 x 11 x 7</param>
+        <param name="Гарантия">1 год</param>
+        <param name="Год выпуска">2016</param>
+        <param name="Страна-изготовитель">Китай</param>
+        <param name="Тип">Мобильный телефон</param>
+        <param name="Разрешение">128x160</param>
+        <param name="Технология матрицы">TFT</param>
+        <param name="Число SIM-карт">2</param>
+        <param name="Поддержка карт памяти">microSD</param>
+        <param name="Макс. объем карты памяти, ГБ">16</param>
+        <param name="Разъемы">3.5 мм</param>
+        <param name="Емкость аккумулятора, мАч">1050</param>
+        <param name="Особенности">Фонарик</param>
+      </offer>
+      <offer id="136151295" available="true" group_id="136151185">
+        <url>http://www.ozon.ru/context/detail/id/136151295/?from=prt_xml_facet</url>
+        <price>1690</price>
+        <baseprice>1690</baseprice>
+        <currencyId>RUR</currencyId>
+        <categoryId>1133677</categoryId>
+        <picture>http://static.ozone.ru/multimedia/spare_covers/1014763854.jpg</picture>
+        <delivery>true</delivery>
+        <orderingTime>
+          <ordering>На складе</ordering>
+        </orderingTime>
+        <name>Philips Xenium E103, Black</name>
+        <vendor>Philips</vendor>
+        <vendorCode>8712581737610</vendorCode>
+        <age>18+</age>
+        <barcode>8712581737610</barcode>
+        <param name="Цвет">черный</param>
+        <param name="Размер упаковки (ДхШхВ), см">13 x 11 x 6.5</param>
+        <param name="Гарантия">1 год</param>
+        <param name="Год выпуска">2016</param>
+        <param name="Страна-изготовитель">Китай</param>
+        <param name="Тип">Мобильный телефон</param>
+        <param name="Разрешение">128x160</param>
+        <param name="Технология матрицы">TFT</param>
+        <param name="Число SIM-карт">2</param>
+        <param name="Поддержка карт памяти">microSD</param>
+        <param name="Макс. объем карты памяти, ГБ">16</param>
+        <param name="Разъемы">3.5 мм</param>
+        <param name="Емкость аккумулятора, мАч">1050</param>
+        <param name="Особенности">Фонарик</param>
+      </offer>
+    </offers>
+  </shop>
+</yml_catalog>
