@@ -58,14 +58,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Category.cs" />
-    <Compile Include="Config.cs" />
     <Compile Include="ConnectionFactory.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Product.cs" />
     <Compile Include="ProductParser.cs" />
     <Compile Include="ProductSaver.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceProvider.cs" />
+    <Compile Include="Validator.cs" />
     <Compile Include="WorkRunner.cs" />
     <Compile Include="YmlStreamReader.cs" />
     <Compile Include="YmlStreamWrapper.cs" />
@@ -75,6 +76,11 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="script.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

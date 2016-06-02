@@ -63,7 +63,7 @@ namespace YMLDownloader
             }
         }
 
-        public void ProcessElements(Stream stream, HandlersCollection handlers)
+        public void ProcessElements(Stream stream, HandlersCollection handlers, Action<string, string> switchHandle)
         {
             var settings = new XmlReaderSettings
             {
@@ -72,17 +72,28 @@ namespace YMLDownloader
 
             using (var reader = XmlReader.Create(stream, settings))
             {
-                ProcessElements(reader, handlers);
+                ProcessElements(reader, handlers, switchHandle);
             }
         }
 
-        public void ProcessElements(XmlReader reader, HandlersCollection handlers)
+        public void ProcessElements(XmlReader reader, HandlersCollection handlers, Action<string, string> switchHandle)
         {
             reader.MoveToContent();
             reader.Read();
+            string current = null;
             while (!reader.EOF && reader.ReadState == ReadState.Interactive)
             {
                 var nodeName = reader.Name;
+
+                if (!string.IsNullOrEmpty(nodeName) && current != nodeName)
+                {
+                    var tmp = current;
+                    current = nodeName;
+
+                    if (tmp != null)
+                        switchHandle(tmp, current);
+                }
+
                 if (reader.NodeType == XmlNodeType.Element
                     && handlers.CanBeHandled(nodeName))
                 {

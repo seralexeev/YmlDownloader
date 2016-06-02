@@ -23,9 +23,9 @@ namespace YMLDownloader
             var success = true;
             product = new Product
             {
+                ID = TryParse(element.Attribute("id")?.Value, s_tryLong, ref success),
                 Name = element.Element("name")?.Value,
                 Price = TryParse(element.Element("price")?.Value, s_tryDouble, ref success),
-                Vendor = element.Element("vendor")?.Value,
                 CategoryID = TryParse(element.Element("categoryId")?.Value, s_tryLong, ref success)
             };
 

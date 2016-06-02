@@ -3,21 +3,19 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using static YMLDownloader.YmlStreamReader;
 
 namespace YMLDownloader
 {
     public class YmlStreamProcessor
     {
-        private LinkedList<Category> _categories { get; } = new LinkedList<Category>();
+        private Dictionary<long, Category> _categories { get; } = new Dictionary<long, Category>();
         private int _categoriesCount = 0;
-        private LinkedList<Category> _invalidCategories { get; } = new LinkedList<Category>();
-        private int _invalidCategoriesCount = 0;
+
         private LinkedList<Product> _products { get; } = new LinkedList<Product>();
         private int _productsCount = 0;
-        private LinkedList<Product> _invalidProducts { get; } = new LinkedList<Product>();
-        private int _invalidProductsCount = 0;
-
+        public int _invalidProducts = 0;
 
         private readonly int _bufferSize;
         private readonly ProductSaver _productSaver;
@@ -25,15 +23,19 @@ namespace YMLDownloader
         private Stopwatch _stopWatch;
         private Exception _exception;
         private XmlProductParser _parser;
+        private Validator _validator;
+        private Logger _logger;
 
         public string Url { get; }
 
         public YmlStreamProcessor(string url,
-            YmlStreamReader reader, XmlProductParser parser,
+            YmlStreamReader reader, XmlProductParser parser, Validator validator, Logger logger,
             ProductSaver productSaver, int bufferSize)
         {
             _reader = reader;
             _parser = parser;
+            _validator = validator;
+            _logger = logger;
             _productSaver = productSaver;
             _bufferSize = bufferSize;
             _stopWatch = Stopwatch.StartNew();
@@ -41,35 +43,92 @@ namespace YMLDownloader
             Url = url;
         }
 
-        public async Task<YmlResult> Process(Stream stream)
+        public YmlResult Process(Stream stream)
         {
             try
             {
-                // Тут все неправильно
-                Product p;
-                Category c;
                 _reader.ProcessElements(stream,
                     new HandlersCollection
                     {
-                        ["category"] = e => (_parser.TryParseCategory(e, out c) ? _categories : _invalidCategories).AddLast(c),
-                        ["offer"] = e => (_parser.TryParseProduct(e, out p) ? _products : _invalidProducts).AddLast(p)
-                    });
-
-                SaveProductsImpl();
+                        ["offer"] = e => HandleProduct(e),
+                        ["category"] = e => HandleCategory(e),
+                    }, HandleSwitch);
             }
             catch (Exception e)
             {
                 _exception = e;
             }
-            finally
-            {
-                _stopWatch.Stop();
-            }
+
+
+            if (_products.Count > 0)
+                SaveProducts();
+
+            _stopWatch.Stop();
 
             return new YmlResult(this);
         }
 
-        private void AddCategory(Category cat) => _categories.AddLast(cat);
+        private void HandleSwitch(string from, string to)
+        {
+            if (from == "category")
+                _productSaver.SaveCategories(_categories.Values);
+        }
+
+        private void HandleProduct(XElement el)
+        {
+            Product p;
+            if (_parser.TryParseProduct(el, out p))
+            {
+                ValidateResult res;
+                if ((res = _validator.Validate(p)).IsValid)
+                {
+                    if (CategoryExist(p))
+                    {
+                        AddProduct(p);
+                        _productsCount++;
+                    }
+                    else
+                    {
+                        _logger.Write($"Product [{p.ID}] has invalid category: {p.CategoryID}");
+                        _invalidProducts++;
+                    }
+                }
+                else
+                {
+                    _logger.Write($"Product [{p.ID}] invalid: {res.Message}");
+                    _invalidProducts++;
+                }
+            }
+            else
+            {
+                _logger.Write($"Unable to parse: {el}");
+                _invalidProducts++;
+            }
+        }
+
+        bool CategoryExist(Product p) => _categories.ContainsKey(p.CategoryID);
+
+        private void HandleCategory(XElement el)
+        {
+            Category p;
+            if (_parser.TryParseCategory(el, out p))
+            {
+                ValidateResult res;
+                if ((res = _validator.Validate(p)).IsValid)
+                {
+                    _categories.Add(p.ID, p);
+                    _categoriesCount++;
+                }
+                else
+                {
+                    _logger.Write($"Product invalid: {res.Message}");
+                }
+            }
+            else
+            {
+                _logger.Write($"Unable to parse: {el}");
+            }
+        }
 
         private void AddProduct(Product product)
         {
@@ -80,21 +139,14 @@ namespace YMLDownloader
             }
             else
             {
-                var awaiter = SaveProductsImpl()
-                    .ConfigureAwait(false).GetAwaiter();
-
-                awaiter.GetResult();
+                SaveProducts();
             }
         }
 
-        private async Task SaveProductsImpl()
+        private void SaveProducts()
         {
-            if (_products.Count > 0)
-            {
-                await _productSaver.SaveProducts(_products);
-
-                _products.Clear();
-            }
+            _productSaver.SaveProducts(_products);
+            _products.Clear();
         }
 
         public YmlResult FromException(Exception e)
@@ -113,9 +165,9 @@ namespace YMLDownloader
                 Url = processor.Url;
                 Exception = processor._exception;
                 ElapsedMilliseconds = processor._stopWatch.ElapsedMilliseconds;
-                Processed = processor._products.Count;
-                Invalid = processor._invalidProducts.Count;
-                Categories = processor._categories.Count;
+                Processed = processor._productsCount;
+                Invalid = processor._invalidProducts;
+                Categories = processor._categoriesCount;
                 Success = !processor._stopWatch.IsRunning && processor._exception != null;
             }
 

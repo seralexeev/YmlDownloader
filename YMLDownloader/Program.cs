@@ -13,18 +13,22 @@ namespace YMLDownloader
     {
         static void Main(string[] args)
         {
-            var connectionString = "";
+            var connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=test;Integrated Security=True";
+            var connectionFactory = new ConnectionFactory(connectionString);
+            var logger = new Logger(connectionFactory);
 
             var c = new Config
             {
                 ConcurrencyDegree = 10,
-                FlushBufferSize = 2,
+                FlushBufferSize = 50,
                 RetryPolicy = 0,
 
-                ProductSaver = new ProductSaver(new ConnectionFactory(connectionString)),
+                ProductSaver = new ProductSaver(connectionFactory),
                 ResourceProvider = new ResourceProvider(),
                 XmlProductParser = new XmlProductParser(),
                 YmlStreamReader = new YmlStreamReader(),
+                Validator = new Validator(),
+                Logger = logger,
 
                 OveralProgress = new ProgressBarOptions
                 {
