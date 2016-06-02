@@ -19,15 +19,18 @@ namespace YMLDownloader
             var db = "test";
             var connectionString = $@"Data Source=.\SQLEXPRESS;Initial Catalog={db};Integrated Security=True";
             var connectionFactory = new ConnectionFactory(connectionString);
-            var logger = new Logger(connectionFactory);
+            //var logger = new Logger(connectionFactory);
+            var logger = new DummyLogger();
 
             var c = new Config
             {
-                ConcurrencyDegree = 10,
+                ConcurrencyDegree = 2,
                 FlushBufferSize = 50,
                 RetryPolicy = 0,
 
-                ProductSaver = new ProductSaver(connectionFactory),
+                //ProductSaver = new ProductSaver(connectionFactory),
+                ProductSaver = new DummyProductSaver(),
+
                 ResourceProvider = new ResourceProvider(),
                 XmlProductParser = new XmlProductParser(),
                 YmlStreamReader = new YmlStreamReader(),

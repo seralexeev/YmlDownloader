@@ -18,19 +18,19 @@ namespace YMLDownloader
         public int _invalidProducts = 0;
 
         private readonly int _bufferSize;
-        private readonly ProductSaver _productSaver;
+        private readonly IProductSaver _productSaver;
         private YmlStreamReader _reader;
         private Stopwatch _stopWatch;
         private Exception _exception;
         private XmlProductParser _parser;
         private Validator _validator;
-        private Logger _logger;
+        private ILogger _logger;
 
         public string Url { get; }
 
         public YmlStreamProcessor(string url,
-            YmlStreamReader reader, XmlProductParser parser, Validator validator, Logger logger,
-            ProductSaver productSaver, int bufferSize)
+            YmlStreamReader reader, XmlProductParser parser, Validator validator, ILogger logger,
+            IProductSaver productSaver, int bufferSize)
         {
             _reader = reader;
             _parser = parser;

@@ -87,10 +87,10 @@ namespace YMLDownloader
         {
             public ResourceProvider ResourceProvider { get; set; }
             public XmlProductParser XmlProductParser { get; set; }
-            public ProductSaver ProductSaver { get; set; }
+            public IProductSaver ProductSaver { get; set; }
             public YmlStreamReader YmlStreamReader { get; set; }
             public Validator Validator { get; set; }
-            public Logger Logger { get; set; }
+            public ILogger Logger { get; set; }
 
             public int ConcurrencyDegree { get; set; }
             public int FlushBufferSize { get; set; }

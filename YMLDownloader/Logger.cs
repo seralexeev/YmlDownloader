@@ -21,10 +21,4 @@ namespace YMLDownloader
                 con.Execute(query, new { text = $"{DateTime.UtcNow.ToShortTimeString()} {type}: {s}" });
         }
     }
-
-    public enum LogType
-    {
-        Info = 0,
-        Error = 1,
-    }
 }
