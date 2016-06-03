@@ -32,8 +32,17 @@ namespace YMLDownloader.UnitTests
                 reader.ProcessElements(stream,
                     new HandlersCollection
                     {
-                        ["category"] = e => categories.AddLast(parser.ParseCategory(e)),
-                        ["offer"] = e => products.AddLast(parser.ParseProduct(e))
+                        ["category"] = e => {
+                            Category c;
+                            if (parser.TryParseCategory(e, out c))
+                                categories.AddLast(c);
+                        },
+
+                        ["offer"] = e => {
+                            Product c;
+                            if (parser.TryParseProduct(e, out c))
+                                products.AddLast(c);
+                        }
                     });
             }
 
@@ -60,9 +69,9 @@ namespace YMLDownloader.UnitTests
         {
             var parser = new XmlProductParser();
 
-            //var res = parser.ParseProduct(el);
-
-            res.ShouldBeEquivalentTo(expectedProduct);
+            Product p;
+            var res = parser.TryParseProduct(el, out p);
+            p.ShouldBeEquivalentTo(expectedProduct);
         }
 
         public static IEnumerable<TestCaseData> GetProductsTestData()
@@ -87,18 +96,18 @@ namespace YMLDownloader.UnitTests
         {
             yield return new Product
             {
+                ID = 136151096,
                 CategoryID = 1133677,
                 Name = "Philips Xenium E103, Red",
-                Price = 1690,
-                Vendor = "Philips"
+                Price = 1690
             };
 
             yield return new Product
             {
+                ID = 136151295,
                 CategoryID = 1133677,
                 Name = "Philips Xenium E103, Black",
-                Price = 1690,
-                Vendor = "Philips"
+                Price = 1690
             };
         }
     }
