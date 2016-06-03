@@ -14,7 +14,7 @@ namespace YMLDownloader
         public ValidateResult Validate(Category p) => s_validResult;
     }
 
-    public class ValidateResult
+    public struct ValidateResult
     {
         public bool IsValid { get; }
         public string Message { get; }
